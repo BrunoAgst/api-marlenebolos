@@ -9,7 +9,7 @@ class LoginController{
         var email = req.body.email;
         
         var emailV = await LoginModel.verificaCampo(email);
-
+        
         if(emailV === undefined){
             res.status(400);
             res.json({"erro": "Email digitado é inválido"});
@@ -17,14 +17,28 @@ class LoginController{
         }
 
         var response = await LoginModel.buscarUsuario(emailV);
-     
+
         if(response === undefined){
             res.status(404);
             res.json({"erro": "Usuario não encontrado"});
             return
         }
 
-        const token = await jwt.sign({email: email}, jwtSecret, {expiresIn: 60 * 3});
+        var token = await LoginModel.gerarToken();
+
+        if(token === undefined){
+            res.status(400);
+            res.json({"erro": "Não foi possível gerar o token"});
+            return
+        }
+
+        var registraToken = await LoginModel.registraToken(token); 
+
+        if(registraToken === undefined){
+            res.status(400);
+            res.json({"erro": "Não foi possível gerar o token"});
+            return
+        }
 
         var response = await LoginModel.enviaEmail(token, emailV);
 
@@ -42,14 +56,22 @@ class LoginController{
         var senha = req.body.senha;
         var confirmarSenha = req.body.confirmarSenha;
         var email = req.body.email;
+        var token = req.body.token;
 
         var senhaV = await LoginModel.verificaCampo(senha);
         var confirmarSenhaV = await LoginModel.verificaCampo(confirmarSenha);
         var emailV = await LoginModel.verificaCampo(email);
+        var tokenV = await LoginModel.verificaCampo(token);
 
         if(senhaV === undefined){
             res.status(400);
             res.json({"erro": "Campo senha inválido"});
+            return
+        }
+
+        if(tokenV === undefined){
+            res.status(400);
+            res.json({"erro": "Campo token inválido"});
             return
         }
 
@@ -61,7 +83,7 @@ class LoginController{
 
         if(emailV === undefined){
             res.status(400);
-            res.json({"erro": "Campo senha inválido"});
+            res.json({"erro": "Email inválido"});
             return
         }
 
@@ -69,13 +91,20 @@ class LoginController{
 
         if(usuario === undefined){
             res.status(404);
-            res.json({"erro": "usuário não cadastradi"});
+            res.json({"erro": "Usuário não cadastrado"});
             return
         }
 
         if(senhaV !== confirmarSenhaV){
             res.status(400);
             res.json({"erro": "A duas senhas precisa ser iguais"});
+            return
+        }
+        const tokenR = await LoginModel.validaToken(tokenV);
+        console.log(tokenR);
+        if(tokenR === undefined){
+            res.status(400);
+            res.json({"erro": "Token inválido"});
             return
         }
 
@@ -90,8 +119,14 @@ class LoginController{
         }
         
         res.status(200);
-        res.json({"sucesso": "Senha alterada com sucesso"});
+        res.json({"sucesso": "Senha alterada com sucesso"}); 
     }   
+
+
+    async validaToken(req, res){
+        res.status(200);
+        res.json({"sucesso": "token válido"});
+    }
 
     async login(req, res){
         var email = req.body.email;

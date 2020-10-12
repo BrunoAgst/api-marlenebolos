@@ -1,7 +1,5 @@
 const database = require('../database/connection');
 const nodemailerConfig = require('../config/nodemailer');
-const jwt = require('jsonwebtoken');
-const jwtSecret = process.env.JWT_SECRET;
 
 class PedidosModel{
 
@@ -68,7 +66,7 @@ class PedidosModel{
     async verificaUsuario(email){
         try {
             var response = await database.where({email: email}).table("acesso");
-            console.log(response);
+
             if(response.length >= 1){
                 return undefined;
             }
@@ -92,6 +90,7 @@ class PedidosModel{
         }
     }
 
+
     async enviaEmail(token, email){
         try {
             await nodemailerConfig.sendMail({
@@ -101,7 +100,6 @@ class PedidosModel{
                 html: `
                     <p>O seu token para recuperar a senha é:</p><br>
                     <h5>${token}</h5><br>
-                    <h4>Lembrando que expira em 3 minutos</h4>
                 `,
             })
 
@@ -113,6 +111,48 @@ class PedidosModel{
             return undefined;
         }
     }
+
+    async registraToken(token){
+        try {
+            await database.insert({
+                token: token,
+                validade: 1,
+                data_criacao: await Date.now()
+            }).into("token");
+
+            return "ok";
+        } catch (error) {
+            console.log(error);
+            return undefined;
+        }
+    }
+
+    async gerarToken(){
+        try {
+            return Math.floor(Math.random() * (999999 - 100000 + 1)) + 10000;
+            
+        } catch (error) {
+            console.log(error);
+            return undefined;
+        }
+    }
+
+    async validaToken(token){
+        try {
+            var response = await database.where({token: token}).table("token");
+            if(response[0].validade !== 1){
+                return undefined;
+            };
+            await database.where({token: token}).update({validade: 0}).table("token");
+
+            return "ok";
+        } catch (error) {
+            console.log(error);
+            return undefined;
+        }
+    }
+
+    
 }
 
 module.exports = new PedidosModel();

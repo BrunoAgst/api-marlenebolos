@@ -11,7 +11,8 @@ router.put('/pedidos/:id', auth, PedidosController.alterar);
 router.get('/pedidos/:id', auth, PedidosController.pedido);
 router.post('/reset-senha', LoginController.resetSenha);
 router.post('/usuario', auth, LoginController.cadastrarUsuario);
-router.post('/nova-senha', auth, LoginController.novaSenha);
-router.get('/usuario', LoginController.login);
+router.post('/nova-senha', LoginController.novaSenha);
+router.post('/login', LoginController.login);
+router.post('/validar', auth, LoginController.validaToken);
 
 module.exports = router;

@@ -4,10 +4,11 @@ const jwtSecret = process.env.JWT_SECRET;
 module.exports = async function(req, res, next) {
 
     const authToken = req.headers['authorization'];
-
+    
     if(authToken === undefined || authToken === null || authToken === ''){
         res.status(404);
         res.json({'err': 'Não Autorizado'});
+        return
     }
 
     const bearer = authToken.split(' ');
@@ -19,7 +20,7 @@ module.exports = async function(req, res, next) {
             res.json({'err': 'Sessão inválida'});
             return
         }
-        
+
         next();
     });
 
