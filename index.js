@@ -14,6 +14,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use("/v1/", router);
 
+
 app.listen(3000, () => {
     console.log('servidor rodando');
 });
