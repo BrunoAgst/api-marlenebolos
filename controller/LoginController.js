@@ -7,7 +7,7 @@ class LoginController{
 
     async resetSenha(req, res){
         var email = req.body.email;
-        
+       
         var emailV = await LoginModel.verificaCampo(email);
         
         if(emailV === undefined){

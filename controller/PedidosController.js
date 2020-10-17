@@ -136,6 +136,17 @@ class PedidosController{
         res.status(200);
         res.json({pedido});
     }
+
+    async valorMensal(req, res){
+        var dataPedidos = await PedidosModel.buscaTimestamp();
+        
+        var listaTimestamp = await PedidosModel.transformaTimestamp(dataPedidos);
+
+        var listaValores = await PedidosModel.comparaData(listaTimestamp);
+
+        res.status(200);
+        res.json({listaValores});
+    }
 }
 
 module.exports = new PedidosController();

@@ -1,7 +1,7 @@
 const database = require('../database/connection');
 const nodemailerConfig = require('../config/nodemailer');
 
-class PedidosModel{
+class LoginModel{
 
     async verificaCampo(valor){
         
@@ -153,6 +153,8 @@ class PedidosModel{
     }
 
     
+
+    
 }
 
-module.exports = new PedidosModel();
+module.exports = new LoginModel();

@@ -11,9 +11,10 @@ router.delete('/pedidos/:id', auth, PedidosController.excluir);
 router.put('/pedidos/:id', auth, PedidosController.alterar);
 router.get('/pedidos/:id', auth, PedidosController.pedido);
 router.post('/reset-senha', LoginController.resetSenha);
-router.post('/usuario', auth, LoginController.cadastrarUsuario);
+router.post('/usuario', LoginController.cadastrarUsuario);
 router.post('/nova-senha', rateLimit, LoginController.novaSenha);
 router.post('/login', rateLimit, LoginController.login);
 router.post('/validar', auth, LoginController.validaToken);
+router.get('/total-mensal', auth, PedidosController.valorMensal);
 
 module.exports = router;

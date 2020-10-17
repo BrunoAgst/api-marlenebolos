@@ -105,6 +105,51 @@ class PedidosModel{
             return undefined;
         }
     }
+    
+    async buscaTimestamp(){
+        try {
+            var response = await database.select("data", "valor").table("registro_pedidos");
+            return response;
+
+        } catch (error) {
+            console.log(error);
+            return undefined;
+        }
+    }
+
+    async transformaTimestamp(array){
+        try {
+            var data = [];
+            
+            for(let i = 0; i < array.length; i++){
+               data.push({data: new Date(array[i].data), valor: array[i].valor}); 
+            }
+
+            return data;
+        } catch (error) {
+            console.log(error);
+            return undefined;
+        }
+    }
+
+    async comparaData(array){
+        try {
+            var hoje = new Date();
+            var valores = [];
+
+            for(let i = 0; i < array.length; i++){
+                if(array[i].data.getMonth() == hoje.getMonth() || array[i].data.getFullYear() == hoje.getFullYear()){
+                    valores.push(array[i].valor);
+                }
+            }
+            return valores;
+        
+        } catch (error) {
+            console.log(error);
+            return undefined;
+        }
+    }
+    
 };
 
 module.exports = new PedidosModel();
