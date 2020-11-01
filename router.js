@@ -16,5 +16,6 @@ router.post('/nova-senha', rateLimit, LoginController.novaSenha);
 router.post('/login', rateLimit, LoginController.login);
 router.post('/validar', auth, LoginController.validaToken);
 router.get('/total-mensal', auth, PedidosController.valorMensal);
+router.get('/pedidos-mensal/:mes/:ano', auth, PedidosController.pedidosMensal);
 
 module.exports = router;

@@ -147,6 +147,53 @@ class PedidosController{
         res.status(200);
         res.json({listaValores});
     }
+
+    async pedidosMensal(req, res){
+        var mes = req.params.mes;
+        var ano = req.params.ano;
+
+        var mesC = parseInt(mes);
+        var anoC = parseInt(ano);
+
+        if((mesC.length >= 1 && mes.length <= 2) || mesC == NaN){
+            res.status(404);
+            res.json({error: 'Mês inválido'});
+            return
+        }
+
+        if(ano.length != 4 || anoC == NaN){
+            res.status(404);
+            res.json({error: 'Ano inválido'});
+            return
+        }
+
+        var pedidos = await PedidosModel.buscaTimestamp();
+
+        if(pedidos === undefined){
+            res.status(400);
+            res.json({error: "não foi possível retornar os pedidos"});
+            return;
+        }
+        
+        var converteTimestamp = await PedidosModel.transformaTimestamp(pedidos);
+
+        if(converteTimestamp === undefined){
+            res.status(400);
+            res.json({error: "não foi possível retornar os pedidos"});
+            return;
+        }
+
+        var totalMensal = await PedidosModel.totalPedidosMensal(converteTimestamp, mesC, anoC);
+
+        if(totalMensal === undefined){
+            res.status(400);
+            res.json({error: "não foi possível retornar os pedidos"});
+            return;
+        }
+
+        res.status(200);
+        res.json(totalMensal);
+    }
 }
 
 module.exports = new PedidosController();

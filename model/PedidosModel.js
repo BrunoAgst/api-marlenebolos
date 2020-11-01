@@ -138,12 +138,31 @@ class PedidosModel{
             var valores = [];
 
             for(let i = 0; i < array.length; i++){
-                if(array[i].data.getMonth() == hoje.getMonth() || array[i].data.getFullYear() == hoje.getFullYear()){
+                if(array[i].data.getMonth() == hoje.getUTCMonth() && array[i].data.getFullYear() == hoje.getUTCFullYear()){
                     valores.push(array[i].valor);
+                    
                 }
             }
             return valores;
         
+        } catch (error) {
+            console.log(error);
+            return undefined;
+        }
+    }
+
+    async totalPedidosMensal(array, mes, ano){
+        try {
+            var pedidos = [];
+
+            for(let i = 0; i < array.length; i++){
+                if(array[i].data.getMonth() == mes && array[i].data.getFullYear() == ano){
+                    pedidos.push(array[i].valor);
+                }
+            }
+
+            return pedidos;
+
         } catch (error) {
             console.log(error);
             return undefined;
